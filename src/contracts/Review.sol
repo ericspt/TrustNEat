@@ -2,15 +2,11 @@
 pragma solidity ^0.7.0;
 
 contract Review {
-	string public name = "Review SC";
 
+	string public contractName = "Review SC";
 	address public owner; 
 
-	address[] public stakers;
-	mapping(address => uint) public stakingBalance;
-	mapping(address => bool) public hasStaked;
-	mapping(uint => mapping(uint => Review)) public restaurantReviews;
-    mapping(uint => Restaurant) public restaurants;
+    Restaurant[] restaurants;
 
     struct ReviewStruct {
         string name;
@@ -23,11 +19,18 @@ contract Review {
         string name;
         string description;
         string imageLink;
-        string rating
+        string rating;
+        ReviewStruct[] reviews;
     }
 
 	constructor() {
 		owner = msg.sender;
 	}
+
+    function addRestaurant(uint _id, string memory _name, string memory _description) public {
+        restaurants[_id] = Restaurant(_name, _description, "", "0");
+    }
+
+    function addReview(uint )
 
 }
