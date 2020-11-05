@@ -1,0 +1,3 @@
+C:\Users\erics\source\repos\TrustNEat\obj\Debug\TrustNEat.njsprojAssemblyReference.cache
+C:\Users\erics\source\repos\TrustNEat\obj\Debug\TrustNEat.njsproj.CoreCompileInputs.cache
+C:\Users\erics\source\repos\TrustNEat\bin\Microsoft.NodejsTools.WebRole.dll
