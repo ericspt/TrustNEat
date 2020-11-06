@@ -1,4 +1,4 @@
-const TokenFarm = artifacts.require('TokenFarm')
+/*const TokenFarm = artifacts.require('TokenFarm')
 
 module.exports = async function (callback) {
 
@@ -6,4 +6,4 @@ module.exports = async function (callback) {
     await tokenFarm.issueTokens()
 
     callback()
-};
+};*/
