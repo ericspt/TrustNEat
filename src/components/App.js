@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import DaiToken from '../abis/DaiToken.json'
-import DappToken from '../abis/DappToken.json'
-import TokenFarm from '../abis/TokenFarm.json'
 import Review from '../abis/Review.json'
-import Navbar from './Navbar'
+import AddRestaurant from './AddRestaurant'
 import Main from './Main'
+import Navbar from './Navbar'
 import './App.css'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
+import ViewRestaurant from './ViewRestaurant'
+import RateRestaurant from './RateRestaurant'
+import ViewCodes from './ViewCodes'
+import EditRestaurant from './EditRestaurant'
+import ViewReview from './ViewReview'
 
 class App extends Component {
 
-    async componentWillMount() {
+    async componentWillMount() { 
         await this.loadWeb3()
         await this.loadBlockchainData()
     }
@@ -23,42 +27,44 @@ class App extends Component {
 
         const networkId = await web3.eth.net.getId()
 
-        // Load DaiToken
-        const daiTokenData = DaiToken.networks[networkId]
-        if (daiTokenData) {
-            const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
-            this.setState({ daiToken })
-            let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
-            this.setState({ daiTokenBalance: daiTokenBalance.toString() })
+        // Load Review
+        const reviewData = Review.networks[networkId]
+        if (reviewData) {
+            const review = new web3.eth.Contract(Review.abi, reviewData.address)
+            this.setState({ cAddress: review.options.address })
+            this.setState({ review })
+            const restaurantCount = await review.methods.restaurantCount().call()
+            this.setState({ restaurantCount })
+            let reviewsHelper = this.state.reviews.slice(); // [[]]
+            let codesHelper = this.state.codes.slice(); // [[]]
+            for (var i = 0; i < restaurantCount; i = i + 1) {
+                const restaurant = await review.methods.restaurants(i).call()
+                this.setState({
+                    restaurants: [...this.state.restaurants, restaurant]
+                })
+                var lista = []
+                var listaCodes = []
+                for (var j = 0; j < restaurant.reviewCount; j = j + 1) {
+                    const reviewObj = await review.methods.getReview(i, j).call()
+                    lista.push(reviewObj)
+                }
+                for (j = 0; j < restaurant.numberOfCodes; j = j + 1) {
+                    const codeObj = await review.methods.getCode(i, j).call()
+                    listaCodes.push(codeObj)
+                }
+                reviewsHelper.push(lista)
+                codesHelper.push(listaCodes)
+            }
+            this.setState({
+                reviews: reviewsHelper,
+                codes: codesHelper
+            })
         } else {
-            window.alert('DaiToken contract not deployed to detected network.')
+            window.alert('Review contract not deployed to detected network.')
         }
-
-        // Load DappToken
-        const dappTokenData = DappToken.networks[networkId]
-        if (dappTokenData) {
-            const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
-            this.setState({ dappToken })
-            let dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
-            this.setState({ dappTokenBalance: dappTokenBalance.toString() })
-        } else {
-            window.alert('DappToken contract not deployed to detected network.')
-        }
-
-        // Load TokenFarm
-        const tokenFarmData = TokenFarm.networks[networkId]
-        if (tokenFarmData) {
-            const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
-            this.setState({ tokenFarm })
-            let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
-            this.setState({ stakingBalance: stakingBalance.toString() })
-        } else {
-            window.alert('TokenFarm contract not deployed to detected network.')
-        }
-
         this.setState({ loading: false })
     }
-
+    
     async loadWeb3() {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum)
@@ -72,71 +78,146 @@ class App extends Component {
         }
     }
 
-    stakeTokens = (amount) => {
+    addRestaurant = (name, restaurantAddress, restaurantLocality, restaurantCountry, restaurantWebsite, imageHash, restaurantOwner) => {
         this.setState({ loading: true })
-        this.state.daiToken.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-            this.state.tokenFarm.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-                this.setState({ loading: false })
-            })
+        this.state.review.methods.addRestaurant(name, restaurantAddress, restaurantLocality, restaurantCountry, restaurantWebsite, imageHash, restaurantOwner).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+            window.location.reload()
         })
     }
 
-    unstakeTokens = (amount) => {
+    addReview = (id, name, description, rating, codeToSubmit, timeAdded, account) => {
         this.setState({ loading: true })
-        this.state.tokenFarm.methods.unstakeTokens().send({ from: this.state.account }).on('transactionHash', (hash) => {
+        this.state.review.methods.addReview(id, name, description, rating, codeToSubmit, timeAdded, account).send({ from: this.state.account }).on('transactionHash', (hash) => {
             this.setState({ loading: false })
+            window.location.reload()
+        })
+    }
+
+    uploadImage = (restaurantID, hash) => {
+        this.setState({ loading: true})
+        this.state.review.methods.uploadImage(restaurantID, hash).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+            window.location.reload()
+        })
+    }
+
+    editRestaurant = (restaurantId, address, locality, country, website) => {
+        this.setState({ loading: true})
+        this.state.review.methods.editRestaurant(restaurantId, address, locality, country, website).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+            window.location.reload()
+        })
+    }
+
+    deleteRestaurant = (restaurantId) => {
+        this.setState({ loading: true})
+        this.state.review.methods.deleteRestaurant(restaurantId).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+            window.location.reload()
+        })
+    }
+
+    buyCodes = (restaurantID, idx1, idx2, codesArray, timeGenerated) => {
+        this.setState({ loading: true})
+        this.state.review.methods.buyCodes(restaurantID, idx1, idx2, codesArray, timeGenerated).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            
+            const web3 = window.web3
+            if (idx2 - idx1 === 1) {
+                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.001", "ether")}).on('transactionHash', (hash) => {
+                    this.setState({ loading: false })
+                    window.location.reload()
+                })
+            }
+            else {
+                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.005", "ether")}).on('transactionHash', (hash) => {
+                    this.setState({ loading: false })
+                    window.location.reload()
+                })
+            }
         })
     }
 
     constructor(props) {
         super(props)
         this.state = {
+            buffer: null,
             account: '0x0',
-            daiToken: {},
-            dappToken: {},
-            tokenFarm: {},
-            daiTokenBalance: '0',
-            dappTokenBalance: '0',
-            stakingBalance: '0',
+            cAddress: '0x0',
+            review: {},
+            restaurants: [],
+            reviews: [],
+            codes: [],
             loading: true
         }
     }
-
+    
     render() {
-        let content
-        if (this.state.loading) {
-            content = <p id="loader" className="text-center">Loading...</p>
-        } else {
-            content = <Main
-                daiTokenBalance={this.state.daiTokenBalance}
-                dappTokenBalance={this.state.dappTokenBalance}
-                stakingBalance={this.state.stakingBalance}
-                stakeTokens={this.stakeTokens}
-                unstakeTokens={this.unstakeTokens}
-            />
-        }
-        return (
-            <div>
-                <Navbar account={this.state.account} />
-                <div className="container-fluid mt-5">
-                    <div className="row">
-                        <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
-                            <div className="content mr-auto ml-auto">
-                                <a
-                                    href="http://www.dappuniversity.com/bootcamp"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                </a>
 
-                                {content}
-
-                            </div>
-                        </main>
-                    </div>
+        if(this.state.loading) {
+            return(
+                <div>
+                    <p id="loader" className="text-center">Loading...</p>
                 </div>
-            </div>
-        );
+                );
+        } else {
+            return (
+                <Router>
+                        <Route path="/">
+                        <Navbar
+                        account = {this.state.account}
+                        />
+                        </Route>
+                        <Route exact path="/">
+                            <Main 
+                            restaurants={this.state.restaurants} 
+                            reviews={this.state.reviews}
+                            />
+                        </Route>
+                        <Route exact path="/add-restaurant">
+                            <AddRestaurant 
+                            restaurants={this.state.restaurants} 
+                            account={this.state.account} 
+                            addRestaurant = {this.addRestaurant} />
+                        </Route>
+                        <Route exact path="/view-restaurant/:id">
+                            <ViewRestaurant 
+                            restaurants={this.state.restaurants} 
+                            reviews={this.state.reviews}
+                            account={this.state.account}
+                            uploadImage = {this.uploadImage}
+                            buyCodes = {this.buyCodes}
+                            codes={this.state.codes}
+                            deleteRestaurant={this.deleteRestaurant}
+                            />
+                        </Route>
+                        <Route exact path="/view-restaurant/:id/rate-restaurant/:code">
+                            <RateRestaurant 
+                            restaurants={this.state.restaurants}
+                            reviews={this.state.reviews} 
+                            codes={this.state.codes}
+                            account={this.state.account} 
+                            addReview={this.addReview}/>
+                        </Route>
+                        <Route exact path="/view-restaurant/:id/view-codes">
+                            <ViewCodes 
+                            restaurants={this.state.restaurants} 
+                            account={this.state.account} 
+                            codes={this.state.codes}
+                            reviews={this.state.reviews}/>
+                        </Route>
+                        <Route exact path="/edit-restaurant/:id">
+                            <EditRestaurant
+                            editRestaurant={this.editRestaurant}/>
+                        </Route>
+                        <Route exact path="/view-restaurant/:id/view-review/:idRv">
+                            <ViewReview
+                            restaurants={this.state.restaurants}
+                            reviews={this.state.reviews}/>
+                        </Route>
+                </Router> 
+            );
+        }
     }
 }
 

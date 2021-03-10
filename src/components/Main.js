@@ -1,76 +1,119 @@
-import React, { Component } from 'react'
-import dai from '../dai.png'
+import React, { useState } from 'react'
+import LinkButton from './LinkButton'
+import './App.css'
+import filled from '../filled.png'
+import nonfilled from '../non-filled.png'
 
-class Main extends Component {
+function Main ({ restaurants, reviews }) {
 
-   
-    render() {
-        return (
-            <div id="content" className="mt-3">
+    const [keyword, setKeyword] = useState("")
 
-                <table className="table table-borderless text-muted text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">Staking Balance</th>
-                            <th scope="col">Reward Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} mDAI</td>
-                            <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} DAPP</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div className="card mb-4" >
-
-                    <div className="card-body">
-
-                        <form className="mb-3" onSubmit={(event) => {
-                            event.preventDefault()
-                            let amount
-                            amount = this.input.value.toString()
-                            amount = window.web3.utils.toWei(amount, 'Ether')
-                            this.props.stakeTokens(amount)
-                        }}>
-                            <div>
-                                <label className="float-left"><b>Stake Tokens</b></label>
-                                <span className="float-right text-muted">
-                                    Balance: {window.web3.utils.fromWei(this.props.daiTokenBalance, 'Ether')}
-                                </span>
-                            </div>
-                            <div className="input-group mb-4">
-                                <input
-                                    type="text"
-                                    ref={(input) => { this.input = input }}
-                                    className="form-control form-control-lg"
-                                    placeholder="0"
-                                    required />
-                                <div className="input-group-append">
-                                    <div className="input-group-text">
-                                        <img src={dai} height='32' alt="" />
-                                    &nbsp;&nbsp;&nbsp; mDAI
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
-                        </form>
-                        <button
-                            type="submit"
-                            className="btn btn-link btn-block btn-sm"
-                            onClick={(event) => {
-                                event.preventDefault()
-                                this.props.unstakeTokens()
-                            }}>
-                            UN-STAKE...
-              </button>
-                    </div>
-                </div>
-
-            </div>
-        );
+    const computeRatingHelper = (id) => {
+        var sum = 0.0
+        var hasReviews = false
+        for (var j = 0; j < restaurants[id].reviewCount; j = j + 1) {
+            sum = sum + parseInt(reviews[id][j].rating)
+            hasReviews = true
+        }
+        sum = sum / restaurants[id].reviewCount
+        if (hasReviews) return sum
+        return 0
     }
+
+    const drawStars = (id) => {
+        var rating = parseInt(computeRatingHelper(id))
+        var images = []
+        for (var j = 1; j <= rating; j = j + 1) {
+            images.push(1)
+        }
+        for (j = rating + 1; j <= 10; j = j + 1) {
+            images.push(0)
+        }
+        console.log(images)
+        return images 
+    }
+
+    return (
+        <div>
+            <div className="main-land mt-5">
+                <h1>Welcome to Trust'N'Eat</h1>
+                <h4>A trusted, decentralised platform for reviewing restaurants</h4>
+                <div className="row">
+                    <div className="col-3"></div>
+                    <div className="col-6">
+                        <div class="input-group">
+                            <input type="search" class="form-control rounded" placeholder="Search for any keyword..." aria-label="Search"
+                                aria-describedby="search-addon" value={keyword} onChange={e => setKeyword(e.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="col-3"></div>
+                </div>
+            </div>
+            <div className="container restaurants-list">
+                { restaurants.map((restaurant, key) => { 
+                return(
+                    <div key={key}>
+                        { restaurant.deleted === false &&
+                        (
+                            restaurant.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                            restaurant.restaurantAddress.toLowerCase().includes(keyword.toLowerCase()) ||
+                            restaurant.restaurantLocality.toLowerCase().includes(keyword.toLowerCase()) ||
+                            restaurant.restaurantCountry.toLowerCase().includes(keyword.toLowerCase()) ||
+                            restaurant.restaurantWebsite.toLowerCase().includes(keyword.toLowerCase())
+                        ) && 
+                        <center>
+                            <div className="card w-50 border-dark mt-3">
+                                <div className="card-body mt-3">
+                                    <div>
+                                    <div className="row">
+                                        <div className="col-2"></div>
+                                        <div className="col-8">
+                                            <div className="text-center" >
+                                                <h2><b>{restaurant.name}</b></h2><br></br>
+                                            </div>
+                                        </div>
+                                        <div className="col-2"></div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-1"></div>
+                                        <div className="col-10">
+                                            {drawStars(key).map((item, i) => {
+                                                return (
+                                                    <div key={i} className="star">
+                                                        {item === 1 && <img src={filled} alt=" " className="starImg"></img>}
+                                                        {item === 0 && <img src={nonfilled} alt=" " className="starImg"></img>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="col-1"></div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-2"></div>
+                                        <div className="col-8 card-text text-center" >
+                                            {restaurant.imageHash !== "" && <img src={'https://ipfs.infura.io/ipfs/' + restaurant.imageHash} alt=" " className="img-fluid restaurant-img"></img>
+                                            }
+                                            {restaurant.imageHash === "" && <img src="https://i.imgur.com/Tqf6YvD.png" alt=" " className="img-fluid restaurant-img"></img>
+                                            }
+                                            <p>{restaurant.imageTitle}</p>
+                                        </div>
+                                        <div className="col-2"></div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-2"></div>
+                                        <LinkButton className="col-8 btn btn-success" to={ '/view-restaurant/' + JSON.stringify(key)}>View</LinkButton>
+                                        <div className="col-2"></div>
+                                    </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </center>
+                        }
+                    </div>
+                )})}
+            </div>
+        </div>
+    );
 }
 
 export default Main;

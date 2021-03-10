@@ -1,1 +1,51 @@
 /* Styles go here */
+.view-button {
+    height: 40px;
+}
+.restaurants-list {
+    flex-direction: column-reverse;
+    display: flex;
+    margin-top: 1rem;
+}
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+.link {
+    text-decoration: none;
+    color: white;
+}
+.link:hover {
+    text-decoration: none;
+    color: gray;
+}
+p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.restaurant-img {
+    max-height: 200px;
+}
+
+.dont-pad {
+    padding-right: 0rem !important;
+    padding-left: 0rem !important;
+}
+.small-pad-top {
+    padding-top: 0.2rem;
+}
+
+.final-card {
+    margin-bottom: 2rem;
+}
+
+.star {
+    display: inline-block;
+    width: 20px;
+}
+.starImg {
+    width: 100%;
+}
+.main-land {
+    text-align: center;
+}
