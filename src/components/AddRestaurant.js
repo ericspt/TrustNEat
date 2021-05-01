@@ -30,7 +30,15 @@ function AddRestaurant ({ restaurants, account, addRestaurant }) {
     return ( 
         <center>
             <div className="mt-5">
-                <div className="row">
+				<center>
+					<h2>
+						Add restaurant
+					</h2>
+					<h5>
+						Adding a restaurant to the platform costs a small transaction fee depending on the Ethereum traffic and ETH's value as a cryptoccurency.
+					</h5>
+				</center>
+                <div className="row mt-3">
                     <div id="content" className="container-fluid">
                         <form onSubmit={handleSubmit} >
                                 Name

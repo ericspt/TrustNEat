@@ -96,7 +96,7 @@ contract Review {
     uint8 _rating, string memory _code, string memory _timeAdded, address payable _to) 
     external payable returns (bool success) {
         Restaurant storage restaurant = restaurants[_restaurantId];
-        restaurant.reviews[restaurant.reviewCount++] = ReviewStruct(_name, _description, _rating, _code, _timeAdded, _to);
+        
         uint i;
         bool pp = false;
         for (i = 0; i < restaurant.reviewCount; i ++) {
@@ -112,6 +112,7 @@ contract Review {
         }
         if (pp) {
             payable(msg.sender).transfer(msg.value + 0.0001 ether);
+			restaurant.reviews[restaurant.reviewCount++] = ReviewStruct(_name, _description, _rating, _code, _timeAdded, _to);
             return true;
         }
         else return false;

@@ -29,7 +29,6 @@ function Main ({ restaurants, reviews }) {
         for (j = rating + 1; j <= 10; j = j + 1) {
             images.push(0)
         }
-        console.log(images)
         return images 
     }
 
@@ -95,7 +94,6 @@ function Main ({ restaurants, reviews }) {
                                             }
                                             {restaurant.imageHash === "" && <img src="https://i.imgur.com/Tqf6YvD.png" alt=" " className="img-fluid restaurant-img"></img>
                                             }
-                                            <p>{restaurant.imageTitle}</p>
                                         </div>
                                         <div className="col-2"></div>
                                     </div>

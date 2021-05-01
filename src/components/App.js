@@ -124,13 +124,13 @@ class App extends Component {
             
             const web3 = window.web3
             if (idx2 - idx1 === 1) {
-                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.001", "ether")}).on('transactionHash', (hash) => {
+                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.005", "ether")}).on('transactionHash', (hash) => {
                     this.setState({ loading: false })
                     window.location.reload()
                 })
             }
             else {
-                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.005", "ether")}).on('transactionHash', (hash) => {
+                web3.eth.sendTransaction({from: this.state.account, to: this.state.cAddress, value: web3.utils.toWei("0.025", "ether")}).on('transactionHash', (hash) => {
                     this.setState({ loading: false })
                     window.location.reload()
                 })
@@ -208,11 +208,13 @@ class App extends Component {
                         </Route>
                         <Route exact path="/edit-restaurant/:id">
                             <EditRestaurant
-                            editRestaurant={this.editRestaurant}/>
+                            editRestaurant={this.editRestaurant}
+							restaurants={this.state.restaurants}
+							/>
                         </Route>
                         <Route exact path="/view-restaurant/:id/view-review/:idRv">
                             <ViewReview
-                            restaurants={this.state.restaurants}
+                            codes={this.state.codes}
                             reviews={this.state.reviews}/>
                         </Route>
                 </Router> 

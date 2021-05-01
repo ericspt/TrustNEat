@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom'
 import LinkButton from './LinkButton'
 import './App.css'
 
-function ViewReview({ restaurants, reviews }) {
+function ViewReview({ codes, reviews }) {
 
     const { id } = useParams()
     const { idRv } = useParams()
     const review = reviews[id][idRv]
+	const theCode = codes[id][idRv]
 
     return (
         <div>
@@ -20,6 +21,7 @@ function ViewReview({ restaurants, reviews }) {
                             <p>Rating: <b>{ review.rating }</b> </p>
                             <p>Code: <b>{ review.code }</b> </p>
                             <p>The review was added on: <b>{ review.timeAdded }</b> </p>
+							<p>The code was generated at: <b>{ theCode.timeGenerated }</b> </p>
                             <p>The review was added by (public address of wallet): <b>{ review.reviewOwner }</b> </p>
                             <LinkButton className="btn btn-info btn-block mt-3" to={'/view-restaurant/' + id}>Back</LinkButton>
                         </div>

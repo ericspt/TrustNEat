@@ -79,8 +79,16 @@ function RateRestaurant ({ restaurants, reviews, codes, account, addReview }) {
     
     return ( 
         <center>
-        { val === false && val2 === false && val3 === false &&
+        { val === false && val2 === false && val3 === false && restaurants[id].deleted === false && 
             <div className="mt-5">
+				<center>
+					<h2>
+						Rate restaurant
+					</h2>
+					<h5>
+						Rating a restaurant requires a small fee. However, this will be automatically returned by the application along with a small reward.
+					</h5>
+				</center>
                 <div className="row">
                     <div id="content" className="container-fluid">
                         <form onSubmit={handleSubmit} >
@@ -164,6 +172,11 @@ function RateRestaurant ({ restaurants, reviews, codes, account, addReview }) {
             { val3 }
         </div>
         }
+		{ restaurants[id].deleted === true &&
+		<div className="mt-5">
+			<h3>This restaurant has been deleted.</h3>
+		</div>
+		}
         </center>
     );
 }
