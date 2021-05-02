@@ -3,13 +3,19 @@ import { useParams } from 'react-router-dom'
 import LinkButton from './LinkButton'
 import './App.css'
 
+/**
+ * This function renders the page for viewing reviews along with their information.
+ * It takes as parameters the lists for reviews and codes
+ */
 function ViewReview({ codes, reviews }) {
 
+	// The ids of the restaurant and the review
     const { id } = useParams()
     const { idRv } = useParams()
+	// The review and code information taken from the bidimensional arrays
     const review = reviews[id][idRv]
 	const theCode = codes[id][idRv]
-
+	// Render the page's content
     return (
         <div>
             <center>

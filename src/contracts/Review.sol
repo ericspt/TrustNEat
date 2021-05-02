@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: UNLICENSED
+//SPDX-License-Identifier: UNLICENSED. To save blockchain space, comments are written in the dissertation paper.
 pragma solidity ^0.8.0;
 
 contract Review {

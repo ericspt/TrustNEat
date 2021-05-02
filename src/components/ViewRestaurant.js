@@ -6,22 +6,31 @@ import Select from 'react-select'
 import filled from '../filled.png'
 import nonfilled from '../non-filled.png'
 
+/**
+ * This function render's the page for viewing restaurant, as well as the administration panel in case
+ * the person viewing it has the wallet address of the restaurant's owner. 
+ * As parameters, the restaurants, codes, reviews and account are given (variables)
+ * Moreover, the functions for uploading and image and deleting a restaurant are also given
+ */
 function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, codes, deleteRestaurant }) {
 
-    //Declare IPFS
+    // Declare IPFS
     const ipfsClient = require('ipfs-http-client')
     const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' }) // leaving out the arguments will default to these values
 
+	// Declare the id of the restaurant, as well as state variables for buffer of uploaded image and number of codes selected
     const { id } = useParams()
     const restaurant = restaurants[id]
     const [buffer, setBuffer] = useState("")
     const [codesN, setCodes] = useState("")
 
+	// Hardcode the number of codes buyable by the user
     const options = [
         { value: 1, label: '1' },
         { value: 5, label: '5' }
     ]
 
+	// This functions computes a random 16-digit alphanumerical string
     const randomCode = () => {
         var result = ''
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -32,6 +41,7 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return result
     }
 
+	// This function checks whether a code was already used by going through all the reviews of the given restaurant
     const checkIfCodeUsed = (theCode) => {
         for (var i = 0; i < restaurants[id].reviewCount; i++) {
             if (reviews[id][i].code === theCode) {
@@ -41,6 +51,8 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return false
     }
 
+	// This function computes how many codes were used and how many unused to give the user a preview of 
+	// their code management
     const numberUsed = () => {
         var usedCodes = 0
         for (var j = 0; j < restaurants[id].numberOfCodes; j++) {
@@ -51,20 +63,28 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return usedCodes
     }
 
+	/* 
+	This function handles the submission of buying codes. 
+	*/
     const handleSubmit = (evt) => {
         evt.preventDefault()
+		// The code array is the potential array of 1 or 5 elements
         var codesArray = []
         for (var i = 0; i < codesN; i++) {
             codesArray.push(randomCode(16))
         }
+		// The numero variable is the number to which the codes will be added as an index
+		// Date.toLocaleString is the current timestamp
         var numero = parseInt(restaurant.numberOfCodes) + parseInt(codesN)
         buyCodes(parseInt(id), restaurant.numberOfCodes, numero, codesArray, Date().toLocaleString())
     }
 
+	// This function will change the codes variable based on the value from the dropdown
     const codesFunc = (codesV) => {
         setCodes(codesV.value)
     }
 
+	// This function computes the rating for a given restaurant 
     const computeRatingHelper = (id) => {
         var sum = 0.0
         var hasReviews = false
@@ -77,6 +97,7 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return 0
     }
 
+	// This function makes lists of 1s and 0s based on the restaurant's rating
     const drawStars = (id) => {
         var rating = parseInt(computeRatingHelper(id))
         var images = []
@@ -89,6 +110,7 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return images 
     }
 
+	// This functions makes lists of 1s and 0s based on the review's rating score
     const drawStarsR = (ratingg) => {
         var rating = parseInt(ratingg)
         var images = []
@@ -101,6 +123,7 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return images 
     }
 
+	// This function computes the wording for the phrase for code ownership
     const wording = () => {
         if(numberUsed() === 1) {
             return 'was'
@@ -108,10 +131,12 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
         return 'were'
     }
 
+	// This function deletes the restaurant which is currently being viewed
     const handleDelete = (evt) => {
         evt.preventDefault()
         deleteRestaurant(id)
     }
+	// Render page's contents
     return (
         <div>
 			{ restaurant.deleted === false &&
@@ -121,7 +146,9 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 						<div className="card-header text-center"><strong>{ restaurant.name }</strong></div>
 						<div className="card-body">
 							<center>
-							
+							{
+							// Render the restaurant's image using Infura's URL pattern and the restaurant's image's hash
+							}
 							{restaurant.imageHash !== "" && <img src={'https://ipfs.infura.io/ipfs/' + restaurant.imageHash} alt=" " className="img-fluid restaurant-img"></img>}
 							<div className="card-text text-center">
 								<p>Address: { restaurant.restaurantAddress }</p>
@@ -133,6 +160,9 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 							<div className="card-text text-center">{drawStars(id).map((item, i) => {
 									return (
 										<div key={i} className="star">
+											{
+											// If the item from the list is 1, it is a filled start. Else, it is not filled.
+											}
 											{item === 1 && <img src={filled} alt=" " className="starImg"></img>}
 											{item === 0 && <img src={nonfilled} alt=" " className="starImg"></img>}
 										</div>
@@ -148,12 +178,19 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 					</center>
 				</div>
 			}
+			{
+			// Display the administration panel only if the wallet address of the current user is the same as the
+			// restaurant's owner
+			}
 			{ account === restaurant.restaurantOwner && restaurant.deleted === false &&
 				<center><div className="card w-75 border-dark mt-3 final-card">
 					<div className="card-header">
 						<center><h3>Administration panel</h3></center>
 					</div>
 					<div className="card-body">
+						{
+						// This form is being used for buying codes. The information is available using the state variables.
+						}
 						<form onSubmit={handleSubmit} >
 							<div className="row">
 							<div className="col-1"></div>
@@ -165,6 +202,9 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 							<div className="col-2"></div>
 							<div className="col-4 mt-3">
 								<center><h3>Buy Review Codes</h3></center>
+								{
+								// The Fragment component is the dropdown that lets the user choose between 1 and 5 codes for purchase
+								}
 								<Fragment>
 									<Select
 										className="basic-single"
@@ -189,20 +229,28 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 						</form>
 						<div className="row mt-3">
 							<div className="col-1"></div>
+							{
+							// This div is used for uploading a profile image for the restaurant. 
+							// The function for loading the image to IPFS is below in the try block
+							// Additionally, the image is uploaded to the blockchain as well using the resulted hash from IPFS
+							}
 							<div className="col-4 overflow-auto text-center mt-2 mb-3 dont-pad">
 								<h3>Upload profile image</h3>
 
 								<form onSubmit={ async (event) => {
 									event.preventDefault()
 									try{
-										const postResponse = await ipfs.add(buffer) 
-										console.log("postResponse", postResponse);
+										const postResponse = await ipfs.add(buffer)
 										uploadImage(parseInt(id), postResponse.path)
 									} catch(e){
 										console.log("Error: ", e)
 									}
 								}} >
 								&nbsp;
+								{
+								// This input field accepts png, jpg, and jpeg images and converts them to array buffers which 
+								// will be used for uploading to IPFS
+								}
 								<input type='file' accept=".png, .jpg, .jpeg" onChange={(event) => {
 									event.preventDefault()
 									const file = event.target.files[0]
@@ -217,6 +265,9 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 								</form>
 							</div>
 							<div className="col-2"></div>
+							{
+							// The form for deleting the restaurant
+							}
 							<form onSubmit={handleDelete} className="col-4 dont-pad">
 								<LinkButton className="btn btn-success btn-block mt-3" to={'/edit-restaurant/' + id}>Edit Details</LinkButton>
 								<button type="submit" className="btn btn-danger btn-block mt-3 dont-pad">Delete Restaurant</button>
@@ -225,6 +276,9 @@ function ViewRestaurant({ restaurants, reviews, account, uploadImage, buyCodes, 
 						</div>
 					</div>
 				</div></center>
+			}
+			{
+			// This is a map function that displays the reviews as Bootstrap cards
 			}
 			{restaurant.reviewCount > 0 && restaurant.deleted === false &&
 			<div className="main-land mt-2"><h2>Reviews</h2></div>}

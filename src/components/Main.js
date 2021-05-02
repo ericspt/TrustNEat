@@ -4,10 +4,21 @@ import './App.css'
 import filled from '../filled.png'
 import nonfilled from '../non-filled.png'
 
+/**
+ * This function has the role of displaying a list of restaurants along with their rating score and picture
+ * It takes as parameters the restaurants list and the review list
+ * This function already has an explanation in the appendix of the dissertation paper, 
+ * but things will be reiterated nonetheless
+ */
 function Main ({ restaurants, reviews }) {
 
+	// The keyword is the value input by the user in the form at the top of the page
     const [keyword, setKeyword] = useState("")
 
+	/**
+	 * This function computes the average rating of a given restaurant (by id)
+	 * by going through its reviews, taking them as integers and averaging them
+	 */
     const computeRatingHelper = (id) => {
         var sum = 0.0
         var hasReviews = false
@@ -19,7 +30,9 @@ function Main ({ restaurants, reviews }) {
         if (hasReviews) return sum
         return 0
     }
-
+	/**
+	 * This function computes an array of star images based on the given rating
+	 */
     const drawStars = (id) => {
         var rating = parseInt(computeRatingHelper(id))
         var images = []
@@ -31,7 +44,7 @@ function Main ({ restaurants, reviews }) {
         }
         return images 
     }
-
+	// Render page's contents
     return (
         <div>
             <div className="main-land mt-5">
@@ -41,6 +54,9 @@ function Main ({ restaurants, reviews }) {
                     <div className="col-3"></div>
                     <div className="col-6">
                         <div class="input-group">
+							{
+							// This part has an input object for the keyword variable using the setKeyword function
+							}
                             <input type="search" class="form-control rounded" placeholder="Search for any keyword..." aria-label="Search"
                                 aria-describedby="search-addon" value={keyword} onChange={e => setKeyword(e.target.value)}/>
                         </div>
@@ -48,6 +64,11 @@ function Main ({ restaurants, reviews }) {
                     <div className="col-3"></div>
                 </div>
             </div>
+			{
+			// map the restaurants, and if they're not deleted, display them only if they contains one of the keywords
+			// During the display process, extract the necessary information, as well as concatenating the image hash
+			// with Infura's URL pattern
+			}
             <div className="container restaurants-list">
                 { restaurants.map((restaurant, key) => { 
                 return(
