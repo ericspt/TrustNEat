@@ -1,2 +1,34 @@
 # TrustNEat
- This project was made for my dissertation work (CS310 - University of Warwick)
+ This project is the technical work of a dissertation project: A hardly manipulable rating system 
+ Department of Computer Science, University of Warwick
+ ## Instructions on how to run it
+ Step 1: Requirements
+ 
+ [MetaMask](https://metamask.io/)
+ [Node.js](https://nodejs.org/en/download/)
+ [Ganache](https://www.trufflesuite.com/ganache)
+ 
+ Step 2: Restart your machine (this will automatically assign PATH variables to Node.js and Ganache)
+ 
+ Step 3: Follow [this](https://www.trufflesuite.com/docs/truffle/getting-started/truffle-with-metamask) tutorial to configure MetaMask with Ganache
+ 
+ Step 4: Go to the code's folder using the terminal and type ```npm install``` - this should install all the necessary packages, including truffle and React
+ 
+ Step 5: Migrate the contracts using ```truffle migrate --reset```
+ 
+ Step 6: Run the code using ```npm run start```
+ 
+ Step 7: Go to http://localhost:3000/ 
+ 
+ Step 8: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable
+ 
+ ## Testing
+ Run ```truffle test```
+ ## Compiling
+ Run ```truffle compile```
+ ## Resetting the restaurants, reviews and so on
+ Run ```truffle migrate --reset```
+ ## In case things go wrong
+ Installing and running a blockchain application on a local machine can be a tedious process. If something goes wrong, do not hesitate to contact me at eric.spataru@warwick.ac.uk and please CC my other email address: eric.spataru@gmail.com
+ 
+  
