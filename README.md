@@ -17,11 +17,17 @@
  
  Step 4: Go to the code's folder using the terminal and type ```npm install``` - this should install all the necessary packages, including truffle and React
 
- Step 5: Restart your PC again to assign the newer paths (including truffle) and run ```npm install -g truffle```
-
- Step 6: Migrate the smart contracts using ```truffle migrate --reset```
+ Step 5: Restart your PC again to assign the newer paths (including truffle) and run 
  
- Step 7: Run the code using ```npm run start```
+ ```npm install -g truffle```
+
+ Step 6: Migrate the smart contracts using 
+ 
+ ```truffle migrate --reset```
+ 
+ Step 7: Run the code using 
+ 
+ ```npm run start```
  
  Step 8: Go to http://localhost:3000/ 
  
