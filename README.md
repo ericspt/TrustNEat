@@ -25,7 +25,7 @@
  
  Step 8: Go to http://localhost:3000/ 
  
- Step 9: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable. You can add new accounts from Ganache to MetaMask to get a better feel of how interactable the application is. 
+ Step 9: It will automatically prompt you to login via MetaMask, but it will say that an error has occured. This is a bug from MetaMask. Press "Switch networks", then choose the network which you were on anyway, then login. After you have done that, the application will be usable. You can add new accounts from Ganache to MetaMask to get a better feel of how interactable the application is. 
  
  ## Testing
  Run ```truffle test```
