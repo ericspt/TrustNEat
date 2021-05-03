@@ -10,17 +10,19 @@
  
  Step 2: Restart your machine (this will automatically assign PATH variables to Node.js and Ganache)
  
- Step 3: Follow [this](https://www.trufflesuite.com/docs/truffle/getting-started/truffle-with-metamask) tutorial to configure MetaMask with Ganache
+ Step 3: Chain ID = 1337 -> Follow [this](https://www.trufflesuite.com/docs/truffle/getting-started/truffle-with-metamask) tutorial to configure MetaMask with Ganache
  
  Step 4: Go to the code's folder using the terminal and type ```npm install``` - this should install all the necessary packages, including truffle and React
+
+ Step 5: Restart your PC again to assign the newer paths (including truffle) 
+
+ Step 6: Migrate the smart contracts using ```truffle migrate --reset```
  
- Step 5: Migrate the contracts using ```truffle migrate --reset```
+ Step 7: Run the code using ```npm run start```
  
- Step 6: Run the code using ```npm run start```
+ Step 8: Go to http://localhost:3000/ 
  
- Step 7: Go to http://localhost:3000/ 
- 
- Step 8: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable
+ Step 9: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable
  
  ## Testing
  Run ```truffle test```
