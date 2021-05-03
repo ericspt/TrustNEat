@@ -34,6 +34,10 @@
  ## Resetting the restaurants, reviews and so on
  Run ```truffle migrate --reset```
  ## In case things go wrong
+ In case it says "Review contract not detected on current network", go to MetaMask and select the added network
+ 
+ Chain ID is 1337
+ 
  Installing and running a blockchain application on a local machine can be a tedious process. If something goes wrong, do not hesitate to contact me at eric.spataru@warwick.ac.uk and please CC my other email address: eric.spataru@gmail.com
  
   
