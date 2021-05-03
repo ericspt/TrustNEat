@@ -25,7 +25,7 @@
  
  Step 8: Go to http://localhost:3000/ 
  
- Step 9: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable
+ Step 9: It will automatically prompt you to login via MetaMask. After you have done that, the application will be usable. You can add new accounts from Ganache to MetaMask to get a better feel of how interactable the application is. 
  
  ## Testing
  Run ```truffle test```
